@@ -241,3 +241,25 @@ fi
 
 df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
 
+
+ser_stat=$(systemctl is-enabled autofs)
+if [ $ser_stat == "enabled" ]
+then
+	systemctl disbale autofs
+fi
+
+dpkg -s aide
+if [ $? -ne 0 ]
+then
+	apt-get install aide aide-common
+	aideinit
+fi
+
+
+crontab -l | { cat; echo "0 5 * * * /usr/bin/aide.wrapper --config /etc/aide/aide.conf"; } | crontab
+
+
+
+
+
+
