@@ -259,7 +259,74 @@ fi
 crontab -l | { cat; echo "0 5 * * * /usr/bin/aide.wrapper --config /etc/aide/aide.conf"; } | crontab
 
 
+chown root:root /boot/grub/grub.cfg
+chmod og-rwx /boot/grub/grub.cfg
+
+#grep "^set superusers" /boot/grub/grub.cfg
+#if [ $? -ne 0 ] 
+#then
+#	grep "^password" /boot/grub/grub.cfg
+#	if [ $? -ne 0 ]
+#	then
+#		echo -e "password\npassword" | grub-mkpasswd-pbkdf2 > pass1
+#		tail -n 1 pass1 > pass2
+#		cat << EOF >> /etc/grub.d/00_header
+#set superusers="root"
+#password_pbkdf2 root $(cat pass2)
+#EOF
+#	fi
+#fi
+#update-grub
+
+grep ^root:[*\!]: /etc/shadow
+if [ $? -ne 0 ]
+then
+	echo -e "password\npassword" | passwd root
+
+fi
+
+echo "* hard core 0" >>  /etc/security/limits.conf
+
+grep "fs\.suid_dumpable" /etc/sysctl.conf /etc/sysctl.d/*
+if [ $? -ne 0 ]
+then
+	echo "fs.suid_dumpable = 0" >> /etc/sysctl.conf
+	sysctl -w fs.suid_dumpable=0
+fi
+
+grep "kernel\.randomize_va_space" /etc/sysctl.conf /etc/sysctl.d/*
+if [ $? -ne 0 ]
+then
+	echo "kernel.randomize_va_space = 2" >>  /etc/sysctl.conf
+	sysctl -w kernel.randomize_va_space=2
+fi
+
+dpkg -s prelink
+if [ $? -eq 0 ]
+then
+	prelink -ua
+	apt-get remove prelink
+fi
+
+dpkg -s apparmor
+
+if [ $? -ne 0 ]
+then
+	echo -e "Y" | apt-get install apparmor apparmor-utils
+
+fi
+
+grep "apparmor=1" /boot/grub/grub.cfg
+if [ $? -ne 0 ]
+then
+	eccho "GRUB_CMDLINE_LINUX="apparmor=1 security=apparmor"" >> /etc/default/grub 
+	update-grub
+fi
 
 
-
+a=$(apparmor_status | grep profiles | grep complain | awk '{print $1;}')
+if [ ! "$a" == "0" ]
+then
+	aa-enforce /etc/apparmor.d/* 
+fi
 
