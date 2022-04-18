@@ -20,9 +20,13 @@ mod hfsplus
 mod udf
 mod freevxfs
 
-pvcreate /var/xvdf
-vgcreate vol /var/xvdf
-
+echo " creating physical volume and volume group"
+pvcreate /dev/xvdf
+vgcreate vol /dev/xvdf
+sleep 3
+echo "physical volume and volume group created successfully"
+]
+echo "Ensure separate mount point exist for /tmp"
 mount | grep /tmp
 if [ $? -eq 0 ]
 then
@@ -44,7 +48,10 @@ else
 	echo "/dev/vol/tmp	/tmp	ext4	rw,nosuid,nodev,noexec,relatime		1	2" >> /etc/fstab
 	mount -a
 fi
+sleep 5
+echo "separate mount point for /tmp created successfully"
 
+echo "Ensure nodev option set on /tmp partition"
 mount | grep /tmp | grep nodev
 if [ $? -ne 0 ]
 then
@@ -52,7 +59,7 @@ then
 	mount -o remount,nodev /tmp
 fi
 
-
+echo "Ensure nosuid option set on /tmp partition"
 mount | grep /tmp | grep nosuid
 if [ $? -ne 0 ]
 then
@@ -61,7 +68,8 @@ then
 fi
 
 
-
+echo "Ensure separate mount point exist for /var"
+sleep 5
 #mount | grep /var
 #if [ $? -eq 0 ]
 #then
@@ -86,6 +94,8 @@ fi
 
 
 
+echo "Ensure separate mount point exist for /var/tmp"
+sleep 5
 mount | grep /var/tmp
 if [ $? -eq 0 ]
 then
@@ -109,7 +119,7 @@ else
 fi
 
 
-
+echo "Ensure nodev option set on /var/tmp partition"
 mount | grep /var/tmp | grep nodev
 if [ $? -ne 0 ]
 then
@@ -117,7 +127,7 @@ then
 	mount -o remount,nodev /var/tmp
 fi
 
-
+echo "Ensure nosuid option set on /var/tmp partition"
 mount | grep /var/tmp | grep nosuid
 if [ $? -ne 0 ]
 then
@@ -126,7 +136,7 @@ then
 fi
 
 
-
+echo "Ensure noexec option set on /var/tmp partition"
 mount | grep /var/tmp | grep noexec
 if [ $? -ne 0 ]
 then
@@ -134,8 +144,8 @@ then
 	mount -o remount,noexec /var/tmp
 fi
 
-
-
+echo "Ensure separate mount point exist for /var/log"
+sleep 5
 mount | grep /var/log
 if [ $? -eq 0 ]
 then
@@ -160,7 +170,8 @@ fi
 
 
 
-
+echo "Ensure separate mount point exist for /var/log/audit"
+sleep 5
 mount | grep /var/log/audit
 if [ $? -eq 0 ]
 then
@@ -185,7 +196,7 @@ fi
 
 
 
-
+echo "Ensure separate mount point exist for /home"
 mount | grep /home
 if [ $? -eq 0 ]
 then
@@ -209,7 +220,7 @@ else
 fi
 
 
-
+echo "Ensure nodev option set on /home partition"
 mount | grep /home | grep nodev
 if [ $? -ne 0 ]
 then
@@ -217,21 +228,21 @@ then
 	mount -o remount,nodev /home
 fi
 
-
+echo "Ensure nodev option set on /dev/shm partition"
 mount | grep /dev/shm | grep nodev
 if [ $? -ne 0 ]
 then
 	mount -o remount,nodev /dev/shm
 fi
 
-
+echo "Ensure nosuid option set on /dev/shm partition"
 mount | grep /dev/shm | grep nosuid
 if [ $? -ne 0 ]
 then
 	mount -o remount,nosuid /dev/shm
 fi
 
-
+echo "Ensure noexec option set on /dev/shm partition"
 mount | grep /dev/shm | grep noexec
 if [ $? -ne 0 ]
 then
@@ -239,15 +250,17 @@ then
 fi
 
 
+echo "Ensure sticky bit is set on all world-writable directories"
 df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
 
-
+echo "Disable Automounting"
 ser_stat=$(systemctl is-enabled autofs)
 if [ $ser_stat == "enabled" ]
 then
 	systemctl disbale autofs
 fi
 
+echo "Ensure AIDE is installed"
 dpkg -s aide
 if [ $? -ne 0 ]
 then
@@ -255,13 +268,14 @@ then
 	aideinit
 fi
 
-
+echo "Ensure filesystem integrity is regularly checked"
 crontab -l | { cat; echo "0 5 * * * /usr/bin/aide.wrapper --config /etc/aide/aide.conf"; } | crontab
 
-
+echo "Ensure permissions on bootloader config are configured"
 chown root:root /boot/grub/grub.cfg
 chmod og-rwx /boot/grub/grub.cfg
 
+echo "Ensure bootloader password is set"
 #grep "^set superusers" /boot/grub/grub.cfg
 #if [ $? -ne 0 ] 
 #then
@@ -280,6 +294,7 @@ chmod og-rwx /boot/grub/grub.cfg
 #fi
 #update-grub
 
+echo "Ensure authentication required for single user mode"
 grep ^root:[*\!]: /etc/shadow
 if [ $? -ne 0 ]
 then
@@ -287,6 +302,7 @@ then
 
 fi
 
+echo " Ensure core dumps are restricted"
 echo "* hard core 0" >>  /etc/security/limits.conf
 
 grep "fs\.suid_dumpable" /etc/sysctl.conf /etc/sysctl.d/*
@@ -303,6 +319,7 @@ then
 	sysctl -w kernel.randomize_va_space=2
 fi
 
+echo "Ensure prelink is disabled"
 dpkg -s prelink
 if [ $? -eq 0 ]
 then
@@ -310,22 +327,24 @@ then
 	apt-get remove prelink
 fi
 
+echo "checking whether apparmor is installed or not"
 dpkg -s apparmor
-
 if [ $? -ne 0 ]
 then
 	echo -e "Y" | apt-get install apparmor apparmor-utils
 
 fi
 
-grep "apparmor=1" /boot/grub/grub.cfg
-if [ $? -ne 0 ]
+echo 'Ensure AppArmor is not disabled in bootloader configuration" 
+grep "apparmor=0" /boot/grub/grub.cfg
+if [ $? -eq 0 ]
 then
-	eccho "GRUB_CMDLINE_LINUX="apparmor=1 security=apparmor"" >> /etc/default/grub 
+	sed '/apparmor=0/d' /etc/default/grub
+	#echo "GRUB_CMDLINE_LINUX="apparmor=1 security=apparmor"" >> /etc/default/grub 
 	update-grub
 fi
 
-
+echo "Ensure all AppArmor Profiles are enforcing"
 a=$(apparmor_status | grep profiles | grep complain | awk '{print $1;}')
 if [ ! "$a" == "0" ]
 then
