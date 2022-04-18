@@ -350,12 +350,33 @@ then
 fi
 
 
+echo -e "\e[1;31m Ensure local login warning banner is configured properly \e[0m"
+cat /etc/issue
+egrep '(\\v|\\r|\\m|\\s)' /etc/issue
+if [ $? -eq 0 ]
+then
+	sed -i 's/\\r//g;s/\\s//g;s/\\v//g;s/\\m//g' /etc/issue
+	echo "Authorized uses only. All activity may be monitored and reported." >> /etc/issue
+fi
+
+echo -e "\e[1;31m Ensure local login warning banner is configured properly \e[0m"
+cat /etc/issue.net
+egrep '(\\v|\\r|\\m|\\s)' /etc/issue.net
+if [ $? -eq 0 ]
+then
+	sed -i 's/\\r//g;s/\\s//g;s/\\v//g;s/\\m//g' /etc/issue
+	echo "Authorized uses only. All activity may be monitored and reported." >> /etc/issue
+fi
 
 
 
+echo -e "\e[1;31m Ensure permissions on /etc/issue are configured \e[0m"
+chown root:root /etc/issue
+chmod 644 /etc/issue
 
-
-
+echo -e "\e[1;31m Ensure permissions on /etc/issue.net are configured \e[0m"
+chown root:root /etc/issue.net
+chmod 644 /etc/issue.net
 
 
 
