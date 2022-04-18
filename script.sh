@@ -275,6 +275,7 @@ chmod og-rwx /boot/grub/grub.cfg
 #set superusers="root"
 #password_pbkdf2 root $(cat pass2)
 #EOF
+#rm pass1 pass2
 #	fi
 #fi
 #update-grub
