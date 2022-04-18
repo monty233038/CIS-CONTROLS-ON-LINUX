@@ -252,7 +252,7 @@ fi
 echo -e "\e[1;31m Ensure sticky bit is set on all world-writable directories \e[0m"
 df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
 
-echo "Disable Automounting \e[0m"
+echo "\e[1;31m Disable Automounting \e[0m"
 ser_stat=$(systemctl is-enabled autofs)
 if [ "$ser_stat" == "enabled" ]
 then
@@ -275,26 +275,24 @@ chown root:root /boot/grub/grub.cfg
 chmod og-rwx /boot/grub/grub.cfg
 
 echo -e "\e[1;31m Ensure bootloader password is set \e[0m"
-#grep "^set superusers" /boot/grub/grub.cfg
-#if [ $? -ne 0 ] 
-#then
-#	grep "^password" /boot/grub/grub.cfg
-#	if [ $? -ne 0 ]
-#	then
-#		echo -e "password\npassword" | grub-mkpasswd-pbkdf2 > pass1
-#		tail -n 1 pass1 > pass2
+grep "^set superusers" /boot/grub/grub.cfg
+if [ $? -ne 0 ] 
+then
+	grep "^password" /boot/grub/grub.cfg
+	if [ $? -ne 0 ]
+	then
+		echo -e "password\npassword" | grub-mkpasswd-pbkdf2 > pass1
+		tail -n 1 pass1 > pass2
 		sed -i 's/PBKDF2 hash of your password is//g' pass2
-#		cat << EOF >> /etc/grub.d/00_header
-#set superusers="root"
-#password_pbkdf2 root $(cat pass2)
-#EOF
-#rm pass1 pass2
-#	fi
-#fi
-#update-grub
+		echo 'set superusers="root"' >> /etc/grub.d/00_header
+		echo "password_pbkdf2 root $(cat pass2)" >> /etc/grub.d/00_header
+		rm pass1 pass2
+	fi
+fi
+update-grub
 
 echo -e "\e[1;31m Ensure authentication required for single user mode \e[0m"
-grep ^root:[*\!]: /etc/shadow
+grep "^root:[*\!]:" /etc/shadow
 if [ $? -ne 0 ]
 then
 	echo -e "password\npassword" | passwd root
@@ -350,4 +348,15 @@ if [ ! "$a" == "0" ]
 then
 	aa-enforce /etc/apparmor.d/* 
 fi
+
+
+
+
+
+
+
+
+
+
+
 
