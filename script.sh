@@ -20,12 +20,12 @@ mod hfsplus
 mod udf
 mod freevxfs
 
-echo -e "\e[1;31m creating physical volume and volume group"
+echo -e "\e[1;31m creating physical volume and volume group \e[0m"
 pvcreate /dev/xvdf
 vgcreate vol /dev/xvdf
 sleep 3
-echo -e "\e[1;31m physical volume and volume group created successfully"
-echo -e "\e[1;31m Ensure separate mount point exist for /tmp"
+echo -e "\e[1;31m physical volume and volume group created successfully \e[0m"
+echo -e "\e[1;31m Ensure separate mount point exist for /tmp \e[0m"
 mount | grep /tmp
 if [ $? -eq 0 ]
 then
@@ -48,9 +48,9 @@ else
 	mount -a
 fi
 sleep 5
-echo -e "\e[1;31m separate mount point for /tmp created successfully"
+echo -e "\e[1;31m separate mount point for /tmp created successfully \e[0m"
 
-echo -e "\e[1;31m Ensure nodev option set on /tmp partition"
+echo -e "\e[1;31m Ensure nodev option set on /tmp partition \e[0m"
 mount | grep /tmp | grep nodev
 if [ $? -ne 0 ]
 then
@@ -58,7 +58,7 @@ then
 	mount -o remount,nodev /tmp
 fi
 
-echo -e "\e[1;31m Ensure nosuid option set on /tmp partition"
+echo -e "\e[1;31m Ensure nosuid option set on /tmp partition \e[0m"
 mount | grep /tmp | grep nosuid
 if [ $? -ne 0 ]
 then
@@ -67,7 +67,7 @@ then
 fi
 
 
-echo -e "\e[1;31m Ensure separate mount point exist for /var"
+echo -e "\e[1;31m Ensure separate mount point exist for /var \e[0m"
 sleep 5
 #mount | grep /var
 #if [ $? -eq 0 ]
@@ -93,7 +93,7 @@ sleep 5
 
 
 
-echo -e "\e[1;31m Ensure separate mount point exist for /var/tmp"
+echo -e "\e[1;31m Ensure separate mount point exist for /var/tmp \e[0m"
 sleep 5
 mount | grep /var/tmp
 if [ $? -eq 0 ]
@@ -118,7 +118,7 @@ else
 fi
 
 
-echo -e "\e[1;31m Ensure nodev option set on /var/tmp partition"
+echo -e "\e[1;31m Ensure nodev option set on /var/tmp partition \e[0m"
 mount | grep /var/tmp | grep nodev
 if [ $? -ne 0 ]
 then
@@ -126,7 +126,7 @@ then
 	mount -o remount,nodev /var/tmp
 fi
 
-echo -e "\e[1;31m Ensure nosuid option set on /var/tmp partition"
+echo -e "\e[1;31m Ensure nosuid option set on /var/tmp partition \e[0m"
 mount | grep /var/tmp | grep nosuid
 if [ $? -ne 0 ]
 then
@@ -135,7 +135,7 @@ then
 fi
 
 
-echo -e "\e[1;31m Ensure noexec option set on /var/tmp partition"
+echo -e "\e[1;31m Ensure noexec option set on /var/tmp partition \e[0m"
 mount | grep /var/tmp | grep noexec
 if [ $? -ne 0 ]
 then
@@ -143,7 +143,7 @@ then
 	mount -o remount,noexec /var/tmp
 fi
 
-echo -e "\e[1;31m Ensure separate mount point exist for /var/log"
+echo -e "\e[1;31m Ensure separate mount point exist for /var/log \e[0m"
 sleep 5
 mount | grep /var/log
 if [ $? -eq 0 ]
@@ -169,7 +169,7 @@ fi
 
 
 
-echo -e "\e[1;31m Ensure separate mount point exist for /var/log/audit"
+echo -e "\e[1;31m Ensure separate mount point exist for /var/log/audit \e[0m"
 sleep 5
 mount | grep /var/log/audit
 if [ $? -eq 0 ]
@@ -195,7 +195,7 @@ fi
 
 
 
-echo -e "\e[1;31m Ensure separate mount point exist for /home"
+echo -e "\e[1;31m Ensure separate mount point exist for /home \e[0m"
 mount | grep /home
 if [ $? -eq 0 ]
 then
@@ -219,7 +219,7 @@ else
 fi
 
 
-echo -e "\e[1;31m Ensure nodev option set on /home partition"
+echo -e "\e[1;31m Ensure nodev option set on /home partition \e[0m"
 mount | grep /home | grep nodev
 if [ $? -ne 0 ]
 then
@@ -227,21 +227,21 @@ then
 	mount -o remount,nodev /home
 fi
 
-echo -e "\e[1;31m Ensure nodev option set on /dev/shm partition"
+echo -e "\e[1;31m Ensure nodev option set on /dev/shm partition \e[0m"
 mount | grep /dev/shm | grep nodev
 if [ $? -ne 0 ]
 then
 	mount -o remount,nodev /dev/shm
 fi
 
-echo -e "\e[1;31m Ensure nosuid option set on /dev/shm partition"
+echo -e "\e[1;31m Ensure nosuid option set on /dev/shm partition \e[0m"
 mount | grep /dev/shm | grep nosuid
 if [ $? -ne 0 ]
 then
 	mount -o remount,nosuid /dev/shm
 fi
 
-echo -e "\e[1;31m Ensure noexec option set on /dev/shm partition"
+echo -e "\e[1;31m Ensure noexec option set on /dev/shm partition \e[0m"
 mount | grep /dev/shm | grep noexec
 if [ $? -ne 0 ]
 then
@@ -249,17 +249,17 @@ then
 fi
 
 
-echo -e "\e[1;31m Ensure sticky bit is set on all world-writable directories"
+echo -e "\e[1;31m Ensure sticky bit is set on all world-writable directories \e[0m"
 df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
 
-echo "Disable Automounting"
+echo "Disable Automounting \e[0m"
 ser_stat=$(systemctl is-enabled autofs)
 if [ "$ser_stat" == "enabled" ]
 then
 	systemctl disbale autofs
 fi
 
-echo -e "\e[1;31m Ensure AIDE is installed"
+echo -e "\e[1;31m Ensure AIDE is installed \e[0m"
 dpkg -s aide
 if [ $? -ne 0 ]
 then
@@ -267,14 +267,14 @@ then
 	aideinit
 fi
 
-echo -e "\e[1;31m Ensure filesystem integrity is regularly checked"
+echo -e "\e[1;31m Ensure filesystem integrity is regularly checked \e[0m"
 crontab -l | { cat; echo "0 5 * * * /usr/bin/aide.wrapper --config /etc/aide/aide.conf"; } | crontab
 
-echo -e "\e[1;31m Ensure permissions on bootloader config are configured"
+echo -e "\e[1;31m Ensure permissions on bootloader config are configured \e[0m"
 chown root:root /boot/grub/grub.cfg
 chmod og-rwx /boot/grub/grub.cfg
 
-echo -e "\e[1;31m Ensure bootloader password is set"
+echo -e "\e[1;31m Ensure bootloader password is set \e[0m"
 #grep "^set superusers" /boot/grub/grub.cfg
 #if [ $? -ne 0 ] 
 #then
@@ -293,7 +293,7 @@ echo -e "\e[1;31m Ensure bootloader password is set"
 #fi
 #update-grub
 
-echo -e "\e[1;31m Ensure authentication required for single user mode"
+echo -e "\e[1;31m Ensure authentication required for single user mode \e[0m"
 grep ^root:[*\!]: /etc/shadow
 if [ $? -ne 0 ]
 then
@@ -301,7 +301,7 @@ then
 
 fi
 
-echo  -e "\e[1;31m Ensure core dumps are restricted"
+echo  -e "\e[1;31m Ensure core dumps are restricted \e[0m"
 echo "* hard core 0" >>  /etc/security/limits.conf
 
 grep "fs\.suid_dumpable" /etc/sysctl.conf /etc/sysctl.d/*
@@ -318,7 +318,7 @@ then
 	sysctl -w kernel.randomize_va_space=2
 fi
 
-echo -e "\e[1;31m Ensure prelink is disabled"
+echo -e "\e[1;31m Ensure prelink is disabled \e[0m"
 dpkg -s prelink
 if [ $? -eq 0 ]
 then
@@ -326,7 +326,7 @@ then
 	apt-get remove prelink
 fi
 
-echo -e "\e[1;31m checking whether apparmor is installed or not"
+echo -e "\e[1;31m checking whether apparmor is installed or not \e[0m"
 dpkg -s apparmor
 if [ $? -ne 0 ]
 then
@@ -335,7 +335,7 @@ then
 
 fi
 
-echo -e "\e[1;31m Ensure AppArmor is not disabled in bootloader configuration" 
+echo -e "\e[1;31m Ensure AppArmor is not disabled in bootloader configuration \e[0m" 
 grep "apparmor=0" /boot/grub/grub.cfg
 if [ $? -eq 0 ]
 then
@@ -344,7 +344,7 @@ then
 	update-grub
 fi
 
-echo -e "\e[1;31m Ensure all AppArmor Profiles are enforcing"
+echo -e "\e[1;31m Ensure all AppArmor Profiles are enforcing \e[0m"
 a=$(apparmor_status | grep profiles | grep complain | awk '{print $1;}')
 if [ ! "$a" == "0" ]
 then
