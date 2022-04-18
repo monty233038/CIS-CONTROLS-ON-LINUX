@@ -270,6 +270,7 @@ chmod og-rwx /boot/grub/grub.cfg
 #	then
 #		echo -e "password\npassword" | grub-mkpasswd-pbkdf2 > pass1
 #		tail -n 1 pass1 > pass2
+		sed -i 's/PBKDF2 hash of your password is//g' pass2
 #		cat << EOF >> /etc/grub.d/00_header
 #set superusers="root"
 #password_pbkdf2 root $(cat pass2)
