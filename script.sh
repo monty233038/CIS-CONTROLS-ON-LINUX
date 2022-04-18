@@ -25,7 +25,6 @@ pvcreate /dev/xvdf
 vgcreate vol /dev/xvdf
 sleep 3
 echo -e "\e[1;31m physical volume and volume group created successfully"
-]
 echo -e "\e[1;31m Ensure separate mount point exist for /tmp"
 mount | grep /tmp
 if [ $? -eq 0 ]
