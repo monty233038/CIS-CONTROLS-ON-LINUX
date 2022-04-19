@@ -287,9 +287,10 @@ then
 		echo 'set superusers="root"' >> /etc/grub.d/00_header
 		echo "password_pbkdf2 root $(cat pass2)" >> /etc/grub.d/00_header
 		rm pass1 pass2
+		update-grub
 	fi
 fi
-update-grub
+
 
 echo -e "\e[1;31m Ensure authentication required for single user mode \e[0m"
 grep "^root:[*\!]:" /etc/shadow
@@ -368,8 +369,6 @@ then
 	echo "Authorized uses only. All activity may be monitored and reported." >> /etc/issue
 fi
 
-
-
 echo -e "\e[1;31m Ensure permissions on /etc/issue are configured \e[0m"
 chown root:root /etc/issue
 chmod 644 /etc/issue
@@ -377,6 +376,7 @@ chmod 644 /etc/issue
 echo -e "\e[1;31m Ensure permissions on /etc/issue.net are configured \e[0m"
 chown root:root /etc/issue.net
 chmod 644 /etc/issue.net
+
 
 
 
