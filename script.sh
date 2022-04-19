@@ -271,12 +271,16 @@ echo -e "\e[1;31m Ensure sticky bit is set on all world-writable directories \e[
 df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
 
 echo -e "\e[1;31m Disable Automounting \e[0m"
-ser_stat=$(systemctl is-enabled autofs)
-if [ "$ser_stat" == "enabled" ]
+dpkg -s autofs
+if [ $? -eq 0]
 then
-	systemctl disbale autofs
-fi
-
+	ser_stat=$(systemctl is-enabled autofs)
+	if [ "$ser_stat" == "enabled" ]
+	then
+		systemctl disbale autofs
+	fi
+fi	
+sleep 5
 echo -e "\e[1;31m Ensure AIDE is installed \e[0m"
 dpkg -s aide
 if [ $? -ne 0 ]
@@ -284,6 +288,7 @@ then
 	echo -e "y" | apt-get install aide aide-common
 	aideinit
 fi
+sleep 5
 
 echo -e "\e[1;31m Ensure filesystem integrity is regularly checked \e[0m"            
 crontab -l | { cat; echo "0 5 * * * /usr/bin/aide.wrapper --config /etc/aide/aide.conf"; } | crontab
