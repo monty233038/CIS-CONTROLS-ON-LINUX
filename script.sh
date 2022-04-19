@@ -84,7 +84,7 @@ then
 	mkdir a
 	cp -rp /var/* /a
 	umount /var
-	lvcreate -L 500 -n var vol
+	lvcreate -L 5000 -n var vol
 	mkfs.ext4 /dev/vol/var
 	echo "/dev/vol/var	/var	ext4	rw,relatime,data=ordered		1	2" >> /etc/fstab
 	mount -a
@@ -94,7 +94,7 @@ else
 
 	mkdir a
 	cp -rp /var/* /a
-	lvcreate -L 500 -n var vol
+	lvcreate -L 5000 -n var vol
 	mkfs.ext4 /dev/vol/var
 	echo "/dev/vol/var	/var	ext4	rw,relatime,data=ordered		1	2" >> /etc/fstab#
 	mount -a
