@@ -252,7 +252,7 @@ fi
 echo -e "\e[1;31m Ensure sticky bit is set on all world-writable directories \e[0m"
 df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
 
-echo "\e[1;31m Disable Automounting \e[0m"
+echo -e "\e[1;31m Disable Automounting \e[0m"
 ser_stat=$(systemctl is-enabled autofs)
 if [ "$ser_stat" == "enabled" ]
 then
@@ -263,17 +263,18 @@ echo -e "\e[1;31m Ensure AIDE is installed \e[0m"
 dpkg -s aide
 if [ $? -ne 0 ]
 then
-	apt-get install aide aide-common
+	echo -e "y" | apt-get install aide aide-common
 	aideinit
 fi
 
-echo -e "\e[1;31m Ensure filesystem integrity is regularly checked \e[0m"
+echo -e "\e[1;31m Ensure filesystem integrity is regularly checked \e[0m"            
 crontab -l | { cat; echo "0 5 * * * /usr/bin/aide.wrapper --config /etc/aide/aide.conf"; } | crontab
 
 echo -e "\e[1;31m Ensure permissions on bootloader config are configured \e[0m"
 chown root:root /boot/grub/grub.cfg
 chmod og-rwx /boot/grub/grub.cfg
 
+#--------------
 echo -e "\e[1;31m Ensure bootloader password is set \e[0m"
 grep "^set superusers" /boot/grub/grub.cfg
 if [ $? -ne 0 ] 
@@ -285,7 +286,7 @@ then
 		tail -n 1 pass1 > pass2
 		sed -i 's/PBKDF2 hash of your password is//g' pass2
 		echo 'set superusers="root"' >> /etc/grub.d/00_header
-		echo "password_pbkdf2 root $(cat pass2)" >> /etc/grub.d/00_header
+		echo "set password_pbkdf2 root $(cat pass2)" >> /etc/grub.d/00_header
 		rm pass1 pass2
 		update-grub
 	fi
@@ -334,12 +335,18 @@ then
 
 fi
 
+dpkg -s apparmor-utils
+if [ $? -ne 0 ]
+then 
+	echo -e "y" | apt-get install apparmor-utils
+
+fi
+
 echo -e "\e[1;31m Ensure AppArmor is not disabled in bootloader configuration \e[0m" 
 grep "apparmor=0" /boot/grub/grub.cfg
 if [ $? -eq 0 ]
 then
 	sed '/apparmor=0/d' /etc/default/grub
-	#echo "GRUB_CMDLINE_LINUX="apparmor=1 security=apparmor"" >> /etc/default/grub 
 	update-grub
 fi
 
@@ -357,8 +364,8 @@ egrep '(\\v|\\r|\\m|\\s)' /etc/issue
 if [ $? -eq 0 ]
 then
 	sed -i 's/\\r//g;s/\\s//g;s/\\v//g;s/\\m//g' /etc/issue
-	echo "Authorized uses only. All activity may be monitored and reported." >> /etc/issue
 fi
+echo "Authorized uses only. All activity may be monitored and reported." >> /etc/issue
 
 echo -e "\e[1;31m Ensure local login warning banner is configured properly \e[0m"
 cat /etc/issue.net
@@ -366,8 +373,8 @@ egrep '(\\v|\\r|\\m|\\s)' /etc/issue.net
 if [ $? -eq 0 ]
 then
 	sed -i 's/\\r//g;s/\\s//g;s/\\v//g;s/\\m//g' /etc/issue
-	echo "Authorized uses only. All activity may be monitored and reported." >> /etc/issue
 fi
+echo "Authorized uses only. All activity may be monitored and reported." >> /etc/issue
 
 echo -e "\e[1;31m Ensure permissions on /etc/issue are configured \e[0m"
 chown root:root /etc/issue
