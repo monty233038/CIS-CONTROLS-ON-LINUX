@@ -69,27 +69,27 @@ fi
 
 echo -e "\e[1;31m Ensure separate mount point exist for /var \e[0m"
 sleep 5
-#mount | grep /var
-#if [ $? -eq 0 ]
-#then
-#	umount /var
-#	rm -rf /var
-#	mkdir /var
-#	chmod 777 /var
-#	lvcreate -L 500 -n var vol
-#	mkfs.ext4 /dev/vol/var
-#	echo "/dev/vol/var	/var	ext4	rw,relatime,data=ordered		1	2" >> /etc/fstab
-#	mount -a
-#else
-#
-#	rm -rf /var
-#	mkdir /var
-#	chmod 777 /var
-#	lvcreate -L 500 -n var vol
-#	mkfs.ext4 /dev/vol/var
-#	echo "/dev/vol/var	/var	ext4	rw,relatime,data=ordered		1	2" >> /etc/fstab
-#	mount -a
-#fi
+mount | grep /var
+if [ $? -eq 0 ]
+then
+	umount /var
+	rm -rf /var
+	mkdir /var
+	chmod 777 /var
+	lvcreate -L 500 -n var vol
+	mkfs.ext4 /dev/vol/var
+	echo "/dev/vol/var	/var	ext4	rw,relatime,data=ordered		1	2" >> /etc/fstab
+	mount -a
+else
+
+	rm -rf /var
+	mkdir /var
+	chmod 777 /var
+	lvcreate -L 500 -n var vol
+	mkfs.ext4 /dev/vol/var
+	echo "/dev/vol/var	/var	ext4	rw,relatime,data=ordered		1	2" >> /etc/fstab#
+	mount -a
+fi
 
 
 
@@ -331,7 +331,6 @@ dpkg -s apparmor
 if [ $? -ne 0 ]
 then
 	echo -e "Y" | apt-get install apparmor 
-	echo -e "y" | apt-get install apparmor-utils
 
 fi
 
