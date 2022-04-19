@@ -29,31 +29,31 @@ echo -e "\e[1;31m Ensure separate mount point exist for /tmp \e[0m"
 mount | grep /tmp
 if [ $? -eq 0 ]
 then
-	umount /tmp
 	#rm -rf /tmp
 	#mkdir /tmp
 	#chmod 777 /tmp
-	mkdir tmp1
-	cp -rp /tmp/* /tmp1
+	mkdir /a
+	cp -rp /tmp/* /a
+	umount /tmp
 	lvcreate -L 500 -n tmp vol
 	mkfs.ext4 /dev/vol/tmp
 	echo "/dev/vol/tmp	/tmp	ext4	rw,nosuid,nodev,noexec,relatime		1	2" >> /etc/fstab
 	mount -a
-	cp -rp /tmp1/* /tmp
-	rm -r /tmp1
+	cp -rp /a/* /tmp
+	rm -r /a
 else
 
 	#rm -rf /tmp
 	#mkdir /tmp
 	#chmod 777 /tmp
-	mkdir tmp1
-	cp -rp /tmp/* /tmp1
+	mkdir /a
+	cp -rp /tmp/* /a
 	lvcreate -L 500 -n tmp vol
 	mkfs.ext4 /dev/vol/tmp
 	echo "/dev/vol/tmp	/tmp	ext4	rw,nosuid,nodev,noexec,relatime		1	2" >> /etc/fstab
 	mount -a
-	cp -rp /tmp1/* /tmp
-	rm -r /tmp1
+	cp -rp /a/* /tmp
+	rm -r /a
 fi
 sleep 5
 echo -e "\e[1;31m separate mount point for /tmp created successfully \e[0m"
@@ -80,31 +80,26 @@ sleep 5
 mount | grep /var
 if [ $? -eq 0 ]
 then
-	umount /tmp
-	#rm -rf /var
-	#mkdir /var
-	#chmod 777 /var
-	mkdir var1
-	cp -rp /var/* /var1
+	
+	mkdir a
+	cp -rp /var/* /a
+	umount /var
 	lvcreate -L 500 -n var vol
 	mkfs.ext4 /dev/vol/var
 	echo "/dev/vol/var	/var	ext4	rw,relatime,data=ordered		1	2" >> /etc/fstab
 	mount -a
-	cp -rp /var/* /var
-	rm -r /var1
+	cp -rp /a/* /var
+	rm -r /a
 else
 
-	#rm -rf /var
-	#mkdir /var
-	#chmod 777 /var
-	mkdir var1
-	cp -rp /var/* /var1
+	mkdir a
+	cp -rp /var/* /a
 	lvcreate -L 500 -n var vol
 	mkfs.ext4 /dev/vol/var
 	echo "/dev/vol/var	/var	ext4	rw,relatime,data=ordered		1	2" >> /etc/fstab#
 	mount -a
-	cp -rp /var/* /var
-	rm -r /var1
+	cp -rp /a/* /var
+	rm -r /a
 fi
 
 
@@ -114,23 +109,25 @@ sleep 5
 mount | grep /var/tmp
 if [ $? -eq 0 ]
 then
+	mkdir a
+	cp -rp /var/tmp/* /a
 	umount /var/tmp
-	rm -rf /var/tmp
-	mkdir /var/tmp
-	chmod 777 /var/tmp
 	lvcreate -L 500 -n var-tmp vol
 	mkfs.ext4 /dev/vol/var-tmp
 	echo "/dev/vol/var-tmp	/var/tmp	ext4	rw,nosuid,nodev,noexec,relatime		1	2" >> /etc/fstab
 	mount -a
+	cp -rp /a/* /var/tmp
+	rm -r /a
 else
 
-	rm -rf /var/tmp
-	mkdir /var/tmp
-	chmod 777 /var/tmp
+	mkdir a
+	cp -rp /var/tmp/* /a
 	lvcreate -L 500 -n var-tmp vol
 	mkfs.ext4 /dev/vol/var-tmp
 	echo "/dev/vol/var-tmp	/var/tmp	ext4	rw,nosuid,nodev,noexec,relatime		1	2" >> /etc/fstab
 	mount -a
+	cp -rp /a/* /var/tmp
+	rm -r /a
 fi
 
 
@@ -164,23 +161,26 @@ sleep 5
 mount | grep /var/log
 if [ $? -eq 0 ]
 then
+	mkdir a
+	cp -rp /var/log/* /a
 	umount /var/log
-	rm -rf /var/log
-	mkdir /var/log
-	chmod 777 /var/log
 	lvcreate -L 500 -n var-log vol
 	mkfs.ext4 /dev/vol/var-log
 	echo "/dev/vol/var-log	/var/log	ext4	rw,relatime,data=ordered		1	2" >> /etc/fstab
 	mount -a
+	cp -rp /a/* /var/log
+	rm -r /a
+	
 else
 
-	rm -rf /var/log
-	mkdir /var/log
-	chmod 777 /var/log
+	mkdir a
+	cp -rp /var/log/* /a
 	lvcreate -L 500 -n var-log vol
 	mkfs.ext4 /dev/vol/var-log
 	echo "/dev/vol/var-log	/var/log	ext4	rw,relatime,data=ordered		1	2" >> /etc/fstab
 	mount -a
+	cp -rp /a/* /var/log
+	rm -r /a
 fi
 
 
@@ -190,23 +190,24 @@ sleep 5
 mount | grep /var/log/audit
 if [ $? -eq 0 ]
 then
+	mkdir a
+	cp -rp /var/log/audit/* /a
 	umount /var/log/audit
-	rm -rf /var/log/audit
-	mkdir /var/log/audit
-	chmod 777 /var/log/audit
 	lvcreate -L 500 -n var-log-audit  vol
 	mkfs.ext4 /dev/vol/var-log-audit
 	echo "/dev/vol/var-log-audit	/var/log/audit		ext4	rw,relatime,data=ordered	1	2" >> /etc/fstab
 	mount -a
+	cp -rp /a/* /var/log/audit
+	rm -r /a
 else
-
-	rm -rf /var/log/audit
-	mkdir /var/log/audit
-	chmod 777 /var/log/audit
+	mkdir a
+	cp -rp /var/log/audit/* /a
 	lvcreate -L 500 -n var-log-audit vol
 	mkfs.ext4 /dev/vol/var-log-audit
 	echo "/dev/vol/var-log-audit	/var/log/audit		ext4	rw,relatime,data=ordered	1	2" >> /etc/fstab
 	mount -a
+	cp -rp /a/* /var/log/audit
+	rm -r /a
 fi
 
 
@@ -215,23 +216,24 @@ echo -e "\e[1;31m Ensure separate mount point exist for /home \e[0m"
 mount | grep /home
 if [ $? -eq 0 ]
 then
+	mkdir a
+	cp -rp /home/* /a
 	umount /home
-	rm -rf /home
-	mkdir /home
-	chmod 777 /home
 	lvcreate -L 500 -n home  vol
 	mkfs.ext4 /dev/vol/home
 	echo "/dev/vol/home	/home		ext4	rw,nodev,relatime,data=ordered	1	2" >> /etc/fstab
 	mount -a
+	cp -rp /a/* /home
+	rm -r /a
 else
-
-	rm -rf /home
-	mkdir /home
-	chmod 777 /home
+	mkdir a
+	cp -rp /home/* /a
 	lvcreate -L 500 -n home vol
 	mkfs.ext4 /dev/vol/home
 	echo "/dev/vol/home	/home		ext4	rw,nodev,relatime,data=ordered	1	2" >> /etc/fstab
 	mount -a
+	cp -rp /a/* /home
+	rm -r /a
 fi
 
 
@@ -290,7 +292,7 @@ echo -e "\e[1;31m Ensure permissions on bootloader config are configured \e[0m"
 chown root:root /boot/grub/grub.cfg
 chmod og-rwx /boot/grub/grub.cfg
 
-#--------------
+
 echo -e "\e[1;31m Ensure bootloader password is set \e[0m"
 grep "^set superusers" /boot/grub/grub.cfg
 if [ $? -ne 0 ] 
