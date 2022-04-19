@@ -277,7 +277,7 @@ then
 	ser_stat=$(systemctl is-enabled autofs)
 	if [ "$ser_stat" == "enabled" ]
 	then
-		systemctl disbale autofs
+		systemctl disable autofs
 	fi
 fi	
 sleep 5
