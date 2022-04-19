@@ -30,22 +30,30 @@ mount | grep /tmp
 if [ $? -eq 0 ]
 then
 	umount /tmp
-	rm -rf /tmp
-	mkdir /tmp
-	chmod 777 /tmp
+	#rm -rf /tmp
+	#mkdir /tmp
+	#chmod 777 /tmp
+	mkdir tmp1
+	cp -rp /tmp/* /tmp1
 	lvcreate -L 500 -n tmp vol
 	mkfs.ext4 /dev/vol/tmp
 	echo "/dev/vol/tmp	/tmp	ext4	rw,nosuid,nodev,noexec,relatime		1	2" >> /etc/fstab
 	mount -a
+	cp -rp /tmp1/* /tmp
+	rm -r /tmp1
 else
 
-	rm -rf /tmp
-	mkdir /tmp
-	chmod 777 /tmp
+	#rm -rf /tmp
+	#mkdir /tmp
+	#chmod 777 /tmp
+	mkdir tmp1
+	cp -rp /tmp/* /tmp1
 	lvcreate -L 500 -n tmp vol
 	mkfs.ext4 /dev/vol/tmp
 	echo "/dev/vol/tmp	/tmp	ext4	rw,nosuid,nodev,noexec,relatime		1	2" >> /etc/fstab
 	mount -a
+	cp -rp /tmp1/* /tmp
+	rm -r /tmp1
 fi
 sleep 5
 echo -e "\e[1;31m separate mount point for /tmp created successfully \e[0m"
@@ -72,23 +80,31 @@ sleep 5
 mount | grep /var
 if [ $? -eq 0 ]
 then
-	umount /var
-	rm -rf /var
-	mkdir /var
-	chmod 777 /var
+	umount /tmp
+	#rm -rf /var
+	#mkdir /var
+	#chmod 777 /var
+	mkdir var1
+	cp -rp /var/* /var1
 	lvcreate -L 500 -n var vol
 	mkfs.ext4 /dev/vol/var
 	echo "/dev/vol/var	/var	ext4	rw,relatime,data=ordered		1	2" >> /etc/fstab
 	mount -a
+	cp -rp /var/* /var
+	rm -r /var1
 else
 
-	rm -rf /var
-	mkdir /var
-	chmod 777 /var
+	#rm -rf /var
+	#mkdir /var
+	#chmod 777 /var
+	mkdir var1
+	cp -rp /var/* /var1
 	lvcreate -L 500 -n var vol
 	mkfs.ext4 /dev/vol/var
 	echo "/dev/vol/var	/var	ext4	rw,relatime,data=ordered		1	2" >> /etc/fstab#
 	mount -a
+	cp -rp /var/* /var
+	rm -r /var1
 fi
 
 
