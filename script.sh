@@ -373,7 +373,7 @@ if [ $? -eq 0 ]
 then
 	sed -i 's/\\r//g;s/\\s//g;s/\\v//g;s/\\m//g' /etc/issue
 fi
-echo "Authorized uses only. All activity may be monitored and reported." >> /etc/issue
+echo "Authorized uses only. All activity may be monitored and reported." >> /etc/issue.net
 
 echo -e "\e[1;31m Ensure permissions on /etc/issue are configured \e[0m"
 chown root:root /etc/issue
