@@ -21,8 +21,8 @@ mod udf
 mod freevxfs
 
 echo -e "\e[1;31m creating physical volume and volume group \e[0m"
-pvcreate /dev/xvdb
-vgcreate vol /dev/xvdb
+pvcreate /dev/sdb
+vgcreate vol /dev/sdb
 sleep 3
 echo -e "\e[1;31m physical volume and volume group created successfully \e[0m"
 echo -e "\e[1;31m Ensure separate mount point exist for /tmp \e[0m"
