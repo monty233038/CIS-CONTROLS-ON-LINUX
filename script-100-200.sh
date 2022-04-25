@@ -67,9 +67,8 @@ then
 #dpkg -s xinetd
 #if [$? -eq 0 ]
 #then
-#    a=$(grep  -A2 "service chargen" /etc/xinetd.d/chargen  | grep "disable"  | head -n 1 | awk '{print $3;}')
-#if [[ ! "$a' == "yes' ]]
-#then
+#	awk '/chargen/{ n=NR+2 } NR==n{ $0="        disable         = yes" }1'   /etc/xinetd.conf /etc/xinetd.d/*
+#fi
 
 a=$(systemctl is-enabled xinetd)
 if [[ "$a" == "enabled" ]]
@@ -93,7 +92,7 @@ grep "^restrict" /etc/ntp.conf
 if [ $? -ne 0 ]
 then
   echo "restrict -4 default kod nomodify notrap nopeer noquery" >> /etc/ntp.conf
-	echo "restrict -6 default kod nomodify notrap nopeer noquery" >> /etc/ntp.conf
+  echo "restrict -6 default kod nomodify notrap nopeer noquery" >> /etc/ntp.conf
 fi	
 		
 egrep "^(server|pool)" /etc/ntp.conf
@@ -105,7 +104,7 @@ fi
 grep "RUNASUSER=ntp" /etc/init.d/ntp
 if [ $? -ne 0 ]
 then
-	echo "RUNASUSER=ntp" /etc/ntp.conf
+	echo "RUNASUSER=ntp"  /etc/init.d/ntp 
 fi
 
 dpkg -l xserver-xorg*
@@ -356,16 +355,6 @@ chown root:root /etc/hosts.allow
 chmod 644 /etc/hosts.allow
 chown root:root /etc/hosts.deny
 chmod 644 /etc/hosts.deny
-
-modprobe -n -v rds
-if [ $? -eq 0 ]
-then
-  lsmod | grep rds
-  if [ $? -ne 0 ]
-  then
-    echo "install tipc /bin/true" > /etc/modprobe.d/rds.conf
-  fi
-fi
 
 modprobe -n -v rds
 if [ $? -eq 0 ]
