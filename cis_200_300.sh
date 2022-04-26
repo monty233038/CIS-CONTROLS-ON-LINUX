@@ -1,21 +1,21 @@
 #!/bin/bash
-Ensure iptables is installed
+echo -e "\e[1;31m Ensure iptables is installed \e[0m"
 dpkg -s iptables
 if [ $? -ne 0 ]
 then
   apt-get install iptables
 
-Ensure default deny firewall policy
+echo -e "\e[1;31m Ensure default deny firewall policy \e[0m"
 iptables -P INPUT DROP
 iptables -P OUTPUT DROP
 iptables -P FORWARD DROP
 
-Ensure loopback traffic is configured
+echo -e "\e[1;31m Ensure loopback traffic is configured \e[0m"
 iptables -A INPUT -i lo -j ACCEPT
 iptables -A OUTPUT -o lo -j ACCEPT
 iptables -A INPUT -s 127.0.0.0/8 -j DROP
 
-Ensure outbound and established connections are configured
+echo  -e "\e[1;31m Ensure outbound and established connections are configured \e[0m"
 iptables -A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT
 iptables -A OUTPUT -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT
@@ -23,7 +23,7 @@ iptables -A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT
 iptables -A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT
 iptables -A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT
 
-Ensure firewall rules exist for all open ports
+echo -e "\e[1;31m Ensure firewall rules exist for all open ports \e[0m"
 netstat -tulnp | awk 'FNR > 2 {print $4}' | cut -d ':' -f 2  > ports
 sed -i '/^$/d' ports
 while read p; do
@@ -34,7 +34,7 @@ while read p; do
         fi
 done <ports
 
-Ensure Auditd service is installed and enabled
+echo -e "\e[1;31m Ensure Auditd service is installed and enabled \e[0m"
 echo -e "y" | apt-get install auditd
 a=$(systemctl is-enabled auditd)
 if [[ ! "$a" -eq "enabled" ]]
@@ -42,11 +42,11 @@ then
   systemctl enable auditd
 fi
 
-Ensure audit log storage size is configured
+echo -e "\e[1;31m Ensure audit log storage size is configured \e[0m"
 sed -i '/max_log_file = 8/d' /etc/audit/auditd.conf 
 echo "max_log_file = 20" >> /etc/audit/auditd.conf 
 
-Ensure system is disabled when audit logs are full
+echo -e "\e[1;31m Ensure system is disabled when audit logs are full \e[0m"
 sed -i '/pace_left_action =/d' /etc/audit/auditd.conf 
 echo "space_left_action = email" >> /etc/audit/auditd.conf
 sed -i '/action_mail_acct =/d' /etc/audit/auditd.conf 
@@ -54,11 +54,11 @@ echo "action_mail_acct = root" >> /etc/audit/auditd.conf
 sed -i '/admin_space_left_action =/d' /etc/audit/auditd.conf 
 echo "admin_space_left_action = halt" >> /etc/audit/auditd.conf
 
-Ensure audit logs are not automatically deleted
+echo -e "\e[1;31m Ensure audit logs are not automatically deleted \e[0m"
 sed -i '/max_log_file_action =/d' /etc/audit/auditd.conf
 echo "max_log_file_action = keep_logs" >> /etc/audit/auditd.conf
 
-Ensure auditing for processes that start prior to auditd is enabled
+echo -e "\e[1;31m Ensure auditing for processes that start prior to auditd is enabled \e[0m"
 grep "audit=1" /etc/default/grub
 if [ $? -ne 0 ]
 then
@@ -66,7 +66,7 @@ then
   update-grub
 fi
 
-Ensure events that modify date and time information are collected
+echo -e "\e[1;31m Ensure events that modify date and time information are collected \e[0m"
 grep time-change /etc/audit/audit.rules
 if [ $? -ne 0 ]
 then
@@ -77,7 +77,7 @@ then
   echo "-w /etc/localtime -p wa -k time-change" >> /etc/audit/audit.rules
 fi
 
-Ensure events that modify user/group information are collected
+echo -e "\e[1;31m Ensure events that modify user/group information are collected \e[0m"
 grep identity /etc/audit/audit.rules
 if [ $? -ne 0 ]
 then
@@ -88,7 +88,7 @@ then
   echo "-w /etc/security/opasswd -p wa -k identity"  >> /etc/audit/audit.rules
 fi
 
-Ensure events that modify the system network environment are collected
+echo -e "\e[1;31m Ensure events that modify the system network environment are collected \e[0m"
 grep system-locale /etc/audit/audit.rules
 if [ $? -ne 0 ]
 then
@@ -100,7 +100,7 @@ then
   echo "-w /etc/network -p wa -k system-locale" >>  /etc/audit/audit.rules
 fi
 
-Ensure events that modify the system Mandatory Access Controls are collected
+echo -e "\e[1;31m Ensure events that modify the system Mandatory Access Controls are collected \e[0m"
 grep MAC-policy /etc/audit/audit.rules
 if [ $? -ne 0 ]
 then
@@ -108,7 +108,7 @@ then
   echo "-w /etc/apparmor.d/ -p wa -k MAC-policy" >>  /etc/audit/audit.rules
 fi
 
-Ensure login and logout events are collected
+echo -e "\e[1;31m Ensure login and logout events are collected \e[0m"
 grep logins /etc/audit/audit.rules
 if [ $? -ne 0 ]
 then
@@ -117,7 +117,7 @@ then
   echo "-w /var/log/tallylog -p wa -k logins" >>  /etc/audit/audit.rules
 fi
 
-Ensure session initiation information is collected
+echo -e "\e[1;31m Ensure session initiation information is collected \e[0m"
 grep session /etc/audit/audit.rules
 if [ $? -ne 0 ]
 then
@@ -131,7 +131,7 @@ then
   echo "-w /var/log/btmp -p wa -k logins" >>  /etc/audit/audit.rules
 fi
 
-Ensure discretionary access control permission modification events are collected 
+echo -e "\e[1;31m Ensure discretionary access control permission modification events are collected \e[0m"
 grep perm_mod /etc/audit/audit.rules
 if [ $? -ne 0 ]
 then
@@ -143,7 +143,7 @@ then
   echo "-a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod" >>  /etc/audit/audit.rules
 fi
  
-Ensure unsuccessful unauthorized file access attempts are collected
+echo -e "\e[1;31m Ensure unsuccessful unauthorized file access attempts are collected \e[0m"
 grep access /etc/audit/audit.rules
 if [ $? -ne 0 ]
 then
@@ -153,7 +153,7 @@ then
   echo "-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access" >>  /etc/audit/audit.rules
 fi
 
-Ensure successful file system mounts are collected
+echo -e "\e[1;31m Ensure successful file system mounts are collected \e[0m"
 grep mounts /etc/audit/audit.rules
 if [ $? -ne 0 ]
 then
@@ -161,7 +161,7 @@ then
   echo "-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=4294967295 -k mounts" >>  /etc/audit/audit.rules
 fi
 
-Ensure file deletion events by users are collected
+echo -e "\e[1;31m Ensure file deletion events by users are collected \e[0m"
 grep delete /etc/audit/audit.rules
 if [ $? -ne 0 ]
 then
@@ -169,7 +169,7 @@ then
   echo "-a always,exit -F arch=b32 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete" >>  /etc/audit/audit.rules
 fi
 
-Ensure changes to system administration scope (sudoers) is collected
+echo -e "\e[1;31m Ensure changes to system administration scope (sudoers) is collected \e[0m"
 grep scope /etc/audit/audit.rules
 if [ $? -ne 0 ]
 then
@@ -177,14 +177,14 @@ then
   echo "-w /etc/sudoers.d/ -p wa -k scope" >>  /etc/audit/audit.rules
 fi
 
-Ensure system administrator actions (sudolog) are collected
+echo -e "\e[1;31m Ensure system administrator actions (sudolog) are collected \e[0m"
 grep actions /etc/audit/audit.rules
 if [ $? -ne 0 ]
 then
   echo "-w /var/log/sudo.log -p wa -k actions" >>  /etc/audit/audit.rules
 fi
 
-Ensure kernel module loading and unloading is collected
+echo -e "\e[1;31m Ensure kernel module loading and unloading is collected \e[0m"
 grep modules /etc/audit/audit.rules
 if [ $? -ne 0 ]
 then
@@ -194,16 +194,16 @@ then
   echo "-a always,exit -F arch=b64 -S init_module -S delete_module -k modules" >>  /etc/audit/audit.rules
 fi
 
-Ensure the audit configuration is immutable 
+echo -e "\e[1;31m Ensure the audit configuration is immutable \e[0m" 
 grep "-e 2"  /etc/audit/audit.rules
 if [ $? -ne 0 ]
 then
   echo "-e 2" >> /etc/audit/audit.rules
 fi
-Reloading Auditd service
+echo -e "\e[1;31m Reloading Auditd service \e[0m"
 systemctl reload auditd
 
-ENsure rsyslog and syslog-ng is installed
+echo -e "\e[1;31m ENsure rsyslog and syslog-ng is installed \e[0m"
 dpkg -s rsyslog
 if [ $? -ne 0 ]
 then
@@ -216,14 +216,14 @@ then
   echo -e "y" | apt-get install syslog-ng
 fi
 
-Ensure rsyslog Service is enabled 
+echo -e "\e[1;31m Ensure rsyslog Service is enabled  \e[0m"
 a=$(systemctl is-enabled rsyslog)
 if [[ ! "$a" == "enabled" ]]
 then
   systemctl enable rsyslog
 fi
 
-Ensure rsyslog default file permissions configured
+echo -e "\e[1;31m Ensure rsyslog default file permissions configured \e[0m"
 grep ^\$FileCreateMode /etc/rsyslog.conf /etc/rsyslog.d/*.conf | grep 0640
 if [ $? -ne 0 ]
 then 
@@ -231,7 +231,7 @@ then
   echo "$FileCreateMode 0640" >> /etc/rsyslog.conf
 fi
 
-Ensure rsyslog is configured to send logs to a remote log host
+echo -e "\e[1;31m Ensure rsyslog is configured to send logs to a remote log host \e[0m"
 grep "^*.*[^I][^I]*@" /etc/rsyslog.conf /etc/rsyslog.d/*.conf
 if [ $? -ne 0 ]
 then
@@ -240,14 +240,14 @@ then
   pkill -HUP rsyslogd
 fi
 
-Ensure syslog-ng service is enabled
+echo -e "\e[1;31m Ensure syslog-ng service is enabled \e[0m"
 a=$(systemctl is-enabled syslog-ng)
 if [[ ! "$a" == "enabled" ]]
 then
   update-rc.d syslog-ng enable
 fi
 
-Ensure syslog-ng default file permissions configured
+echo -e "\e[1;31m Ensure syslog-ng default file permissions configured \e[0m"
 grep ^options /etc/syslog-ng/syslog-ng.conf | grep 0640
 if [ $? -ne 0 ]
 then
@@ -255,41 +255,41 @@ then
   echo "options { chain_hostnames(off); flush_lines(0); perm(0640); stats_freq(3600); threaded(yes); };" >>  /etc/syslog-ng/syslog-ng.conf
 fi
 
-Ensure permissions on all logfiles are configured
+echo -e "\e[1;31m Ensure permissions on all logfiles are configured \e[0m"
 chmod -R g-wx,o-rwx /var/log/*
 
-Ensure cron daemon is enabled
+echo -e "\e[1;31m Ensure cron daemon is enabled \e[0m"
 a=$(systemctl is-enabled cron)
 if [[ ! "$a" == "enabled" ]]
 then
   systemctl enable cron
 fi
 
-Ensure permissions on /etc/crontab are configured
+echo -e "\e[1;31m Ensure permissions on /etc/crontab are configured \e[0m"
 chown root:root /etc/crontab
 chmod og-rwx /etc/crontab
   
-Ensure permissions on /etc/cron.hourly are configured
+echo -e "\e[1;31m Ensure permissions on /etc/cron.hourly are configured \e[0m"
 chown root:root /etc/cron.hourly
 chmod og-rwx /etc/cron.hourly
 
-Ensure permissions on /etc/cron.daily are configured
+echo -e "\e[1;31m Ensure permissions on /etc/cron.daily are configured \e[0m"
 chown root:root /etc/cron.daily
 chmod og-rwx /etc/cron.daily
   
-Ensure permissions on /etc/cron.weekly are configured
+echo -e "\e[1;31m Ensure permissions on /etc/cron.weekly are configured \e[0m"
 chown root:root /etc/cron.weekly
 chmod og-rwx /etc/cron.weekly
 
-Ensure permissions on /etc/cron.monthly are configured
+echo -e "\e[1;31m Ensure permissions on /etc/cron.monthly are configured \e[0m"
 chown root:root /etc/cron.monthly
 chmod og-rwx /etc/cron.monthly
 
-Ensure permissions on /etc/cron.d are configured
+echo -e "\e[1;31m Ensure permissions on /etc/cron.d are configured \e[0m"
 chown root:root /etc/cron.d
 chmod og-rwx /etc/cron.d
 
-Ensure at/cron is restricted to authorized users 
+echo -e "\e[1;31m Ensure at/cron is restricted to authorized users  \e[0m"
 stat /etc/cron.deny
 if [ $? -eq 0 ]
 then
@@ -308,7 +308,7 @@ then
   chown root:root /etc/at.allow
 fi
 
-Ensure sshd daemon is intalled
+echo -e "\e[1;31m Ensure sshd daemon is intalled \e[0m"
 dpkg -s openssh-server
 if [ $? -ne 0 ]
 then
