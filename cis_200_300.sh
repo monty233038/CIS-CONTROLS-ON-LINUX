@@ -200,6 +200,140 @@ if [ $? -ne 0 ]
 then
   echo "-e 2" >> /etc/audit/audit.rules
 fi
+Reloading Auditd service
+systemctl reload auditd
+
+ENsure rsyslog and syslog-ng is installed
+dpkg -s rsyslog
+if [ $? -ne 0 ]
+then
+  echo -e "y" | apt-get install rsyslog
+fi
+
+dpkg -s syslog-ng
+if [ $? -ne 0 ]
+then
+  echo -e "y" | apt-get install syslog-ng
+fi
+
+Ensure rsyslog Service is enabled 
+a=$(systemctl is-enabled rsyslog)
+if [[ ! "$a" == "enabled" ]]
+then
+  systemctl enable rsyslog
+fi
+
+Ensure rsyslog default file permissions configured
+grep ^\$FileCreateMode /etc/rsyslog.conf /etc/rsyslog.d/*.conf | grep 0640
+if [ $? -ne 0 ]
+then 
+  sed -i '/$FileCreateMode/d' /etc/rsyslog.conf 
+  echo "$FileCreateMode 0640" >> /etc/rsyslog.conf
+fi
+
+Ensure rsyslog is configured to send logs to a remote log host
+grep "^*.*[^I][^I]*@" /etc/rsyslog.conf /etc/rsyslog.d/*.conf
+if [ $? -ne 0 ]
+then
+  # THis is s demo server in actual we will replace this will with real domain
+  echo "*.* @@loghost.example.com" >> /etc/rsyslog.conf /etc/rsyslog.d/*.conf
+  pkill -HUP rsyslogd
+fi
+
+Ensure syslog-ng service is enabled
+a=$(systemctl is-enabled syslog-ng)
+if [[ ! "$a" == "enabled" ]]
+then
+  update-rc.d syslog-ng enable
+fi
+
+Ensure syslog-ng default file permissions configured
+grep ^options /etc/syslog-ng/syslog-ng.conf | grep 0640
+if [ $? -ne 0 ]
+then
+  sed -i '/options/d' /etc/syslog-ng/syslog-ng.conf
+  echo "options { chain_hostnames(off); flush_lines(0); perm(0640); stats_freq(3600); threaded(yes); };" >>  /etc/syslog-ng/syslog-ng.conf
+fi
+
+Ensure permissions on all logfiles are configured
+chmod -R g-wx,o-rwx /var/log/*
+
+Ensure cron daemon is enabled
+a=$(systemctl is-enabled cron)
+if [[ ! "$a" == "enabled" ]]
+then
+  systemctl enable cron
+fi
+
+Ensure permissions on /etc/crontab are configured
+chown root:root /etc/crontab
+chmod og-rwx /etc/crontab
+  
+Ensure permissions on /etc/cron.hourly are configured
+chown root:root /etc/cron.hourly
+chmod og-rwx /etc/cron.hourly
+
+Ensure permissions on /etc/cron.daily are configured
+chown root:root /etc/cron.daily
+chmod og-rwx /etc/cron.daily
+  
+Ensure permissions on /etc/cron.weekly are configured
+chown root:root /etc/cron.weekly
+chmod og-rwx /etc/cron.weekly
+
+Ensure permissions on /etc/cron.monthly are configured
+chown root:root /etc/cron.monthly
+chmod og-rwx /etc/cron.monthly
+
+Ensure permissions on /etc/cron.d are configured
+chown root:root /etc/cron.d
+chmod og-rwx /etc/cron.d
+
+Ensure at/cron is restricted to authorized users 
+stat /etc/cron.deny
+if [ $? -eq 0 ]
+then
+  rm /etc/cron.deny
+  rm /etc/at.deny
+fi
+
+stat /etc/cron.allow
+if [ $? -ne 0 ]
+then
+  touch /etc/cron.allow
+  touch /etc/at.allow
+  chmod og-rwx /etc/cron.allow
+  chmod og-rwx /etc/at.allow
+  chown root:root /etc/cron.allow 
+  chown root:root /etc/at.allow
+fi
+
+Ensure sshd daemon is intalled
+dpkg -s openssh-server
+if [ $? -ne 0 ]
+then
+  echo -e "y" | openssh-server
+fi
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
 
 
 
