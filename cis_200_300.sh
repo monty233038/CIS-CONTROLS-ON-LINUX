@@ -1,4 +1,5 @@
 #!/bin/bash
+apt-get update
 echo -e "\e[1;31m Ensure iptables is installed \e[0m"
 dpkg -s iptables
 if [ $? -ne 0 ]
@@ -213,7 +214,7 @@ fi
 dpkg -s syslog-ng
 if [ $? -ne 0 ]
 then
-  echo -e "y" | apt-get install syslog-ng
+  echo -e "y" | apt-get install syslog-ng syslog-ng-core
 fi
 
 echo -e "\e[1;31m Ensure rsyslog Service is enabled  \e[0m"
