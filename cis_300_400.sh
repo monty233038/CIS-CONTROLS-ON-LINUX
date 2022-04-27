@@ -335,7 +335,7 @@ Ensure all users home directories exist
 cat /etc/passwd | egrep -v '^(root|halt|sync|shutdown)' | awk -F: '($7 != "/usr/sbin/nologin" && $7 != "/bin/false") { print $1 " " $6 }' | while read user dir; do 
 if [ ! -d "$dir" ]; then mkdir $dir
 chown $user:$user $dir
-usermod -d $uer
+usermod -d $user
 fi
 done
 
@@ -381,7 +381,7 @@ else
         do
                 if [ ! -h "$file" -a -f "$file" ]
                 then
-                        fileperm=`ls -ld $file | cut -f1 -d" "`
+                        fileperm=`ls -ld $dir/$file | cut -f1 -d" "`
                         if [ `echo $fileperm | cut -c6` != "-" ]
                         then
                                 chmod g-w $file
@@ -463,7 +463,7 @@ for i in $(cut -s -d: -f4 /etc/passwd | sort -u )
 do
  grep -q -P "^.*?:[^:]*:$i:" /etc/group
  if [ $? -ne 0 ]; then
-         groupadd $(cat /etc/group | awk  -F: '($3 == 1002) { print $1 }')
+         groupadd $(cat /etc/passwd | awk  -F: '($4 == $i) { print $1 }')
  fi
 done
 
@@ -489,7 +489,7 @@ done
 
 Ensure shadow group is empty
 a=$(grep ^shadow /etc/group | awk -F: '{ print $3 }')
-deluser $(awk -F: '($4 == "42") { print }' /etc/passwd | awk -F: '{ print $1 }') shadow
+deluser $(awk -F: '($4 == "42") { print $1 }' /etc/passwd ') shadow
 
 
 
