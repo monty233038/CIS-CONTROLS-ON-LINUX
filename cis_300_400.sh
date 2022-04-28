@@ -88,14 +88,14 @@ echo "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-
 
 echo -e "\e[1;31m Ensure SSH Idle Timeout Interval is configured \e[0m"
 a=$(grep "^ClientAliveInterval" /etc/ssh/sshd_config | awk '{ print $2 }')
-if [ $a -gt 300 || -z "$a" ]
+if [[ $a -gt 300 || -z "$a" ]]
 then
         sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config 
         echo "ClientAliveInterval 300" >> /etc/ssh/sshd_config
 fi
 
 a=$(grep "^ClientAliveCountMax" /etc/ssh/sshd_config | awk '{ print $2 }')
-if [ $a -gt 3  || -z "$a" ]
+if [[ $a -gt 3  || -z "$a" ]]
 then
         sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config 
         echo "ClientAliveCountMax 0" >> /etc/ssh/sshd_config
@@ -103,7 +103,7 @@ fi
 
 echo -e "\e[1;31m Ensure SSH LoginGraceTime is set to one minute or less \e[0m"
 a=$(grep "^LoginGraceTime" /etc/ssh/sshd_config | awk '{ print $2 }')
-if [ $a -gt 60 || -z "$a" ]
+if [[ $a -gt 60 || -z "$a" ]]
 then
         sed -i '/LoginGraceTime/d' /etc/ssh/sshd_config 
         echo "LoginGraceTime 60" >> /etc/ssh/sshd_config
@@ -236,7 +236,7 @@ then
   echo "TMOUT=600" >> /etc/bash.bashrc
 fi
 
-grep "^TMOUT" /etc/profile /etc/profile.d/*.sh \e[0m"
+grep "^TMOUT" /etc/profile /etc/profile.d/*.sh
 if [ $? -ne 0 ]
 then
   echo "TMOUT=600" >> /etc/profile /etc/profile.d/*.sh
@@ -279,19 +279,19 @@ chown root:shadow /etc/gshadow-
 chmod o-rwx,g-rw /etc/gshadow-
 
 echo -e "\e[1;31m Ensure no world writable files exist \e[0m"
-for file in $(df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002) \e[0m"
+for file in $(df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002) 
 do
   chmod o-w $file
 done
 
 echo -e "\e[1;31m Ensure no unowned files or directories exist \e[0m" 
-for file in $(df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nouser) \e[0m"
+for file in $(df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nouser) 
 do
   chown root:root $file
 done
 
 echo -e "\e[1;31m Ensure no ungrouped files or directories exist \e[0m"
-for file in $(df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nogroup) \e[0m"
+for file in $(df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nogroup)
 do
   chown root:root $file
 done
