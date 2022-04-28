@@ -11,7 +11,7 @@ chmod og-rwx /etc/ssh/sshd_config
 
 echo -e "\e[1;31m Ensure SSH Protocol is set to 2 \e[0m"
 a=$(grep "^Protocol" /etc/ssh/sshd_config | awk '{ print $2 }')
-if [[ ! "$a" == "2" ]]
+if [[ ! "$a" == "2" || -z "$a" ]]
 then
         sed -i '/Protocol/d' /etc/ssh/sshd_config 
         echo "Protocol 2" >> /etc/ssh/sshd_config
@@ -19,7 +19,7 @@ fi
 
 echo -e "\e[1;31m Ensure SSH LogLevel is set to INFO \e[0m"
 a=$(grep "^LogLevel" /etc/ssh/sshd_config | awk '{ print $2 }')
-if [[ ! "$a" == "INFO" ]]
+if [[ ! "$a" == "INFO" || -z "$a" ]]
 then
         sed -i '/LogLevel/d' /etc/ssh/sshd_config 
         echo "LogLevel INFO" >> /etc/ssh/sshd_config
@@ -28,7 +28,7 @@ fi
 
 echo -e "\e[1;31m Ensure SSH X11 forwarding is disabled \e[0m"
 a=$(grep "^X11Forwarding" /etc/ssh/sshd_config | awk '{ print $2 }')
-if [[ ! "$a" == "no" ]]
+if [[ ! "$a" == "no" || -z "$a" ]]
 then
         sed -i '/X11Forwarding/d' /etc/ssh/sshd_config 
         echo "X11Forwarding no" >> /etc/ssh/sshd_config
@@ -36,7 +36,7 @@ fi
 
 echo -e "\e[1;31m Ensure SSH MaxAuthTries is set to 4 or less \e[0m"
 a=$(grep "^MaxAuthTries" /etc/ssh/sshd_config | awk '{ print $2 }')
-if [[ ! "$a" == "4" ]]
+if [[ ! "$a" == "4" || -z "$a" ]]
 then
         sed -i '/MaxAuthTries/d' /etc/ssh/sshd_config 
         echo "MaxAuthTries 4" >> /etc/ssh/sshd_config
@@ -44,7 +44,7 @@ fi
 
 echo -e "\e[1;31m Ensure SSH IgnoreRhosts is enabled \e[0m"
 a=$(grep "^IgnoreRhosts" /etc/ssh/sshd_config | awk '{ print $2 }')
-if [[ ! "$a" == "yes" ]]
+if [[ ! "$a" == "yes" || -z "$a" ]]
 then
         sed -i '/IgnoreRhosts/d' /etc/ssh/sshd_config 
         echo "IgnoreRhosts yes" >> /etc/ssh/sshd_config
@@ -52,7 +52,7 @@ fi
 
 echo -e "\e[1;31m Ensure SSH HostbasedAuthentication is disabled \e[0m"
 a=$(grep "^HostbasedAuthentication" /etc/ssh/sshd_config | awk '{ print $2 }')
-if [[ ! "$a" == "no" ]]
+if [[ ! "$a" == "no" || -z "$a" ]]
 then
         sed -i '/HostbasedAuthentication/d' /etc/ssh/sshd_config 
         echo "HostbasedAuthentication no" >> /etc/ssh/sshd_config
@@ -60,7 +60,7 @@ fi
 
 echo -e "\e[1;31m Ensure SSH root login is disabled \e[0m"
 a=$(grep "^PermitRootLogin" /etc/ssh/sshd_config | awk '{ print $2 }')
-if [[ ! "$a" == "no" ]]
+if [[ ! "$a" == "no" || -z "$a" ]]
 then
         sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config 
         echo "PermitRootLogin no" >> /etc/ssh/sshd_config
@@ -68,7 +68,7 @@ fi
 
 echo -e "\e[1;31m Ensure SSH PermitEmptyPasswords is disabled  \e[0m"
 a=$(grep "^PermitEmptyPasswords" /etc/ssh/sshd_config | awk '{ print $2 }')
-if [[ ! "$a" == "no" ]]
+if [[ ! "$a" == "no" || -z "$a" ]]
 then
         sed -i '/PermitEmptyPasswords/d' /etc/ssh/sshd_config 
         echo "PermitEmptyPasswords no" >> /etc/ssh/sshd_config
@@ -76,7 +76,7 @@ fi
 
 echo -e "\e[1;31m Ensure SSH PermitUserEnvironment is disabled \e[0m"
 a=$(grep "^PermitUserEnvironment" /etc/ssh/sshd_config | awk '{ print $2 }')
-if [[ ! "$a" == "no" ]]
+if [[ ! "$a" == "no" || -z "$a" ]]
 then
         sed -i '/PermitUserEnvironment/d' /etc/ssh/sshd_config 
         echo "PermitUserEnvironment no" >> /etc/ssh/sshd_config
@@ -88,14 +88,14 @@ echo "MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-
 
 echo -e "\e[1;31m Ensure SSH Idle Timeout Interval is configured \e[0m"
 a=$(grep "^ClientAliveInterval" /etc/ssh/sshd_config | awk '{ print $2 }')
-if [ $a -gt 300 ]
+if [ $a -gt 300 || -z "$a" ]
 then
         sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config 
         echo "ClientAliveInterval 300" >> /etc/ssh/sshd_config
 fi
 
 a=$(grep "^ClientAliveCountMax" /etc/ssh/sshd_config | awk '{ print $2 }')
-if [ $a -gt 3 ]
+if [ $a -gt 3  || -z "$a" ]
 then
         sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config 
         echo "ClientAliveCountMax 0" >> /etc/ssh/sshd_config
@@ -103,7 +103,7 @@ fi
 
 echo -e "\e[1;31m Ensure SSH LoginGraceTime is set to one minute or less \e[0m"
 a=$(grep "^LoginGraceTime" /etc/ssh/sshd_config | awk '{ print $2 }')
-if [ $a -gt 60 ]
+if [ $a -gt 60 || -z "$a" ]
 then
         sed -i '/LoginGraceTime/d' /etc/ssh/sshd_config 
         echo "LoginGraceTime 60" >> /etc/ssh/sshd_config
@@ -165,9 +165,10 @@ fi
 echo -e "\e[1;31m Ensure password hashing algorithm is SHA-512 \e[0m"
 egrep '^password\s+(\S+\s+)+pam_unix\.so\s+(\S+\s+)*sha512' /etc/pam.d/common-password 
 if [ $? -ne 0 ]
-  echo "password [success=1 default=ignore] pam_unix.so sha512" >> /etc/pam.d/common-password 
 then
-
+  echo "password [success=1 default=ignore] pam_unix.so sha512" >> /etc/pam.d/common-password 
+fi
+ 
 echo -e "\e[1;31m Ensure password expiration is 365 days or less \e[0m"
 sed -i '/PASS_MAX_DAYS/d' /etc/login.defs
 echo "PASS_MAX_DAYS 90" >> /etc/login.defs
@@ -199,6 +200,7 @@ if [[ $a -gt 30 || $a -eq -1 ]]
 then
   useradd -D -f 30
 fi
+
 for user in $(cat /etc/passwd | cut -d: -f1)
 do
           chage --inactive 30 $user
@@ -276,19 +278,19 @@ echo -e "\e[1;31m Ensure permissions on /etc/gshadow- are configured \e[0m"
 chown root:shadow /etc/gshadow-
 chmod o-rwx,g-rw /etc/gshadow-
 
-echo -e "\e[1;31m Ensure no world writable files exist
+echo -e "\e[1;31m Ensure no world writable files exist \e[0m"
 for file in $(df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002) \e[0m"
 do
   chmod o-w $file
 done
 
-echo -e "\e[1;31m Ensure no unowned files or directories exist 
+echo -e "\e[1;31m Ensure no unowned files or directories exist \e[0m" 
 for file in $(df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nouser) \e[0m"
 do
   chown root:root $file
 done
 
-echo -e "\e[1;31m Ensure no ungrouped files or directories exist
+echo -e "\e[1;31m Ensure no ungrouped files or directories exist \e[0m"
 for file in $(df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -nogroup) \e[0m"
 do
   chown root:root $file
