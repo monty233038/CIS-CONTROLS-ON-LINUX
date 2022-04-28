@@ -300,7 +300,7 @@ echo -e "\e[1;31m Ensure password fields are not empty \e[0m"
 for user in $(cat /etc/shadow | awk -F: '($2 == "!" ) { print $1 }')
 do
   passwd -l $user
-do
+done
 
 echo -e "\e[1;31m Ensure no legacy "+" entries exist in /etc/passwd \e[0m"
 grep '^\+:' /etc/passwd
@@ -383,11 +383,11 @@ else
                 if [ ! -h "$file" -a -f "$file" ]
                 then
                         fileperm=`ls -ld $dir/$file | cut -f1 -d" "`
-                        if [ `echo $fileperm | cut -c6` != "-" ]
+                        if [ '$(echo $fileperm | cut -c6)" != "-" ]
                         then
                                 chmod g-w $file
                         fi
-                        if [ `echo $fileperm | cut -c9` != "-" ]
+                        if [ "$(echo $fileperm | cut -c9)" != "-" ]
                         then
                                 chmod o-w $file
                         fi
@@ -489,8 +489,12 @@ cat /etc/group | cut -f3 -d":" | sort -n | uniq -c | while read x ; do
 done
 
 echo -e "\e[1;31m Ensure shadow group is empty \e[0m"
-a=$(grep ^shadow /etc/group | awk -F: '{ print $3 }')
-deluser $(awk -F: '($4 == "42") { print $1 }' /etc/passwd ') shadow
+shadow_gid=$(grep ^shadow /etc/group | awk -F: '{ print $3 }')
+user=$(awk -F: '($4 == "42") { print $1 }' /etc/passwd)
+if [[ ! -z $user ]]
+then
+  deluser  $user shadow
+fi
 
 
 
