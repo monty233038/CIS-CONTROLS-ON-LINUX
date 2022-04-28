@@ -301,7 +301,7 @@ echo -e "\e[1;31m Ensure LDAP client is not installed \e[0m"
 dpkg -s ldap-utils
 if [ $? -eq 0 ]
 then
-  apt-get remove ldap-utils
+  echo -e "y" | apt-get remove ldap-utils
 fi
 
 echo -e "\e[1;31m Ensure IP forwarding is disabled \e[0m"
