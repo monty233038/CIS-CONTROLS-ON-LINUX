@@ -5,6 +5,7 @@ dpkg -s iptables
 if [ $? -ne 0 ]
 then
   apt-get install iptables
+fi
 
 echo -e "\e[1;31m Ensure default deny firewall policy \e[0m"
 iptables -P INPUT DROP
@@ -301,6 +302,7 @@ fi
 stat /etc/cron.allow
 if [ $? -ne 0 ]
 then
+  echo "creating cron allow file"
   touch /etc/cron.allow
   touch /etc/at.allow
   chmod og-rwx /etc/cron.allow
