@@ -124,12 +124,15 @@ then
         echo "AllowGroups ubuntu" >> /etc/ssh/sshd_config
 fi
 
-echo -e "\e[1;31mEnsure SSH warning banner is configured  \e[0m"
+echo -e "\e[1;31m Ensure SSH warning banner is configured  \e[0m"
 grep "^Banner" /etc/ssh/sshd_config
 if [ $? -ne 0 ]
 then
   echo "Banner /etc/issue.net" >>  /etc/ssh/sshd_config
 fi
+
+echo -e "\e[1;31m Reloading SSHD service  \e[0m"
+systemctl reload sshd
 
 echo -e "\e[1;31m Ensure password creation requirements are configured \e[0m"
 echo -e "y" | apt-get install libpam-pwquality
