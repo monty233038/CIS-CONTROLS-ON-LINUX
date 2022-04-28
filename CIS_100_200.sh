@@ -199,7 +199,7 @@ then
   systemctl disable  bind9
 fi
 
-echo -e "\e[1;31m Ensure VSFTPD service is not enabled \e[0m""
+echo -e "\e[1;31m Ensure VSFTPD service is not enabled \e[0m"
 a=$( systemctl is-enabled  vsftpd)
 if [[ "$a" == "enabled" ]]
 then
