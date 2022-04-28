@@ -383,7 +383,7 @@ else
                 if [ ! -h "$file" -a -f "$file" ]
                 then
                         fileperm=`ls -ld $dir/$file | cut -f1 -d" "`
-                        if [ '$(echo $fileperm | cut -c6)" != "-" ]
+                        if [ "$(echo $fileperm | cut -c6)" != "-" ]
                         then
                                 chmod g-w $file
                         fi
