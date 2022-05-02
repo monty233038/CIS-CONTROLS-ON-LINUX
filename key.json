@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "vast-arena-329806",
+  "private_key_id": "d4db4f8b01c291297918553f5cb243c5aba5411c",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCrEZubs+ch8OQ8\nStz7xPHDI6dGTS2u4axfZrMbiPO29aqXGcPbchi1wzoTqIwXVJs6gKpeq+8eyTvX\nvYw8clD4dmQXvc0XjAV2UgAq0kR2sgX63rUNz8NVgRwDNI/o4R0bqYtbVLqtNUTY\nkmHIFw9elanuGooTF5t8EAclGii/MoJUZYXgBzI1IuZNYWZLV1hWWboUwZ9eu6ei\n8DukoB2DXKSw0XxkBT+N7Ih+DOAj+wYtIgsm7wm80tzkVokVfWCVF0PB0KVp69CH\n5ezkiHjN93JbJAZ+050DafyWnS9EQ+0RVHXFmQtM9yArcp/+0Z8QNIa2h0HpH+S+\nTqYFTWQZAgMBAAECggEACuaZtfWkKzJiltF17LCvb63+TyFkoXXVsjQVAnKLBiv4\nIX4FsB6AgteUhDNrruJoLFWN1a/K0llEIBKe5KyrqnN/3A/vCVq1r+UYh+IDdRVR\nwntNyfok4jZSksU3DOHIZS579/dJmHcyIoNMag/HHdG3ZPnptb79vE14qRV2Rn2e\nbYk2lff9tgKxXjzek5lYI268fqRJrt/6Q5fzfzOe75c77j7OjLvyBqqqp9fAXIiN\nIPJ8hkXMGii4W3/OSsE4gkCY7JwqHWtwEZzfWTmmms3kxcIzl+AlK852yCwMSi+F\n51NslKb3QeDMAcKqhmFVzarw/9h1xC02AGo6WC7vkQKBgQDvUXvJznnYYlmAgI//\n1YTAUC3ncBNj/LaGr2FYV89cFlBWzKYY3F1qe5xQU5vj6VNZpCuJAbag32n7P9MY\nJDfLqTa7AWz5ZDkSxDrDJeeZKy9nh3OuWI/Y3BLSa+GUAHAuzXZTYc3tg6MrJLCe\nWRF3b0nDobN8MKRsCiEisD3gCQKBgQC2/j7Z32NVXRhQimRACMIJJUAv0/rYhIPQ\nUD1QXDe9f1YAfCKS84W7q7jk0az+cvsApcRrbtC2Kv04hewGiyDkcBqqzodxSneE\nh3uBB/Oxm/4RDhBtWtarvGSTlqAGAYyk414k1lDdcgg//msAx1wV0gzL97wcbBxK\nf41hGedHkQKBgBJAPpaHXpd3+KdqJpE2MWeRNc7+pxvq++iNm3jnSXMWaI4WEVy4\nAY/LWYJuvebFtouRj5hlPw5Ju4Vjuq+Oo4qunvPoCe2DDS83M9wKGf1+Y6EbnWDg\ndCfvsKfHfm6REf0fwjRdsxy3+0uhAq8wz7oyDIgU3uFLvF5Y72n70twxAoGBAJaO\nV+epg3CYR4j8U77bdclQfJ7dKWU6obiiS8/yD2o5eeisOUXuVfkyL80TNeGjeB/w\nQsqhQdafR/dZN/eqQEWydj5R7d2oBu1jCpn+kOFwFnixuZI/Sp/BQH6tTruiSrTe\n3HYyXhXT3DXKfP8HBxxs1Vp7WKmJyT0B9LAPP9oBAoGANX0thgWVziVMkRsdkzDK\nLVZVehM1vFG8u4SMEcBLeMjmjThHPIyZ0fdsraARbECMxyQPECByjRnxq/13GcJN\nRjArIlMS7J7qkjggOzmPlnmUv9xn9VEY9ATQRwwGAW3+SbAY1zPTgFNiQxsTASR+\nHTtax3MoePyis1CHlV1KX4E=\n-----END PRIVATE KEY-----\n",
+  "client_email": "packer-service-acc@vast-arena-329806.iam.gserviceaccount.com",
+  "client_id": "110633181769690968191",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/packer-service-acc%40vast-arena-329806.iam.gserviceaccount.com"
+}
