@@ -1,0 +1,39 @@
+{
+    "builders": [
+      {
+        "type": "googlecompute",
+        "project_id": "vast-arena-329806",
+        "zone": "us-central1-a",
+        "source_image": "ubuntu-1804-bionic-v20220331a",
+        "ssh_username": "root",
+        "image_name": "packer-ubuntu",
+        "account_file": "./key.json"
+      }
+    ],
+    "provisioners": [   
+        {
+            "type": "file",
+            "source": "./key.json",
+            "destination": "/"
+        },                                                       
+        { 
+            "type": "shell",                                                        
+            "inline": [                  
+                "cd /",                                           
+                "sudo apt-get install apt-transport-https ca-certificates gnupg",
+                "echo 'deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main' | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list",
+                "curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -",
+                "sudo apt-get update && sudo apt-get install google-cloud-cli",
+                "gcloud auth activate-service-account --key-file key.json",
+                "echo -e 'y' | gcloud config set project vast-arena-329806",
+                "gcloud config configurations create myconfiguration",
+                "gcloud compute disks create cis1 --zone=us-central1-a --size=20GB --type=pd-standard",
+                "gcloud compute instances attach-disk $(uname -a | awk '{ print $2 }') --disk cis1 --zone=us-central1-a",
+                "git clone https://github.com/monty233038/CIS-CONTROLS-ON-LINUX.git",
+                "cd CIS-CONTROLS-ON-LINUX ",
+                "chmod +x cis.sh && bash cis.sh"
+            ]                                                                      
+        }
+    
+    ]
+  }
