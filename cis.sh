@@ -297,8 +297,8 @@ echo -e "\e[1;31m Ensure AIDE is installed \e[0m"
 dpkg -s aide
 if [ $? -ne 0 ]
 then
-	echo -e "y" | apt-get install aide aide-common
-	aideinit
+#	echo -e "y" | apt-get install aide aide-common
+#	aideinit
 fi
 sleep 5
 
