@@ -719,7 +719,7 @@ echo -e "\e[1;31m Ensure TELNET client is not installed \e[0m"
 dpkg -s telnet
 if [ $? -eq 0 ]
 then
-  apt-get remove telnet
+  echo -e "y" | apt-get remove telnet
 fi
 
 echo -e "\e[1;31m Ensure LDAP client is not installed \e[0m"
